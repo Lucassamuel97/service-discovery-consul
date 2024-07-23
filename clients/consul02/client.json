@@ -1,0 +1,11 @@
+{
+    "retry_join": ["172.20.0.2", "172.20.0.3", "172.20.0.4"],
+    "data_dir": "/tmp",
+    "client_addr": "0.0.0.0",
+    "encrypt": "4qi0x6r7rnCVG3dI9rRplCBuPiN1ETDfQkNQXbO7A/A=",
+    "ui_config": {
+      "enabled": true
+    },
+    "log_level": "INFO"
+}
+  

@@ -1,32 +1,74 @@
 version: '3'
 
 services: 
-    consulserver01:   
-        image: consul:1.10
-        container_name: consulserver01
-        hostname: consulserver01
-        command: ['tail', '-f', '/dev/null']
-    consulserver02:   
-        image: consul:1.10
-        container_name: consulserver02
-        hostname: consulserver02
-        command: ['tail', '-f', '/dev/null']
-    consulserver03:   
-        image: consul:1.10
-        container_name: consulserver03
-        hostname: consulserver03
-        command: ['tail', '-f', '/dev/null']
-    consulclient01:   
-        image: consul:1.10
-        container_name: consulclient01
-        hostname: consulclient01
-        command: ['tail', '-f', '/dev/null']
-        volumes: 
-            - ./clients/consul01:/etc/consul.d
-    consulclient02:   
-        image: consul:1.10
-        container_name: consulclient02
-        hostname: consulclient02
-        command: ['tail', '-f', '/dev/null']
-        volumes: 
-            - ./clients/consul02:/etc/consul.d
+  consulserver01:   
+    image: consul:1.10
+    container_name: consulserver01
+    hostname: consulserver01
+    command: consul agent -config-file=/etc/consul.d/server.json
+    volumes: 
+      - ./servers/server01:/etc/consul.d
+      - consul_data1:/consul/data
+    ports:
+      - "8500:8500"
+    networks:
+      consul_network:
+        ipv4_address: 172.20.0.2
+
+  consulserver02:   
+    image: consul:1.10
+    container_name: consulserver02
+    hostname: consulserver02
+    command: consul agent -config-file=/etc/consul.d/server.json
+    volumes: 
+      - ./servers/server02:/etc/consul.d
+      - consul_data2:/consul/data
+    networks:
+      consul_network:
+        ipv4_address: 172.20.0.3
+
+  consulserver03:   
+    image: consul:1.10
+    container_name: consulserver03
+    hostname: consulserver03
+    command: consul agent -config-file=/etc/consul.d/server.json
+    volumes: 
+      - ./servers/server03:/etc/consul.d
+      - consul_data3:/consul/data
+    networks:
+      consul_network:
+        ipv4_address: 172.20.0.4
+    
+  consulclient01:   
+    image: consul:1.10
+    container_name: consulclient01
+    hostname: consulclient01
+    command: consul agent -config-file=/etc/consul.d/client.json
+    volumes: 
+      - ./clients/consul01:/etc/consul.d
+    networks:
+      consul_network:
+        ipv4_address: 172.20.0.5
+
+  consulclient02:   
+    image: consul:1.10
+    container_name: consulclient02
+    hostname: consulclient02
+    command: consul agent -config-file=/etc/consul.d/client.json
+    volumes: 
+      - ./clients/consul02:/etc/consul.d
+    networks:
+      consul_network:
+        ipv4_address: 172.20.0.6
+
+volumes:
+  consul_data1:
+  consul_data2:
+  consul_data3:
+
+networks:
+  consul_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
